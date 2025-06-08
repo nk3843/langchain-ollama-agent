@@ -1,5 +1,7 @@
 import streamlit as st
 from app.agent import create_agent
+from langchain_core.messages import HumanMessage, AIMessage
+
 
 agent = create_agent()
 
@@ -7,7 +9,7 @@ st.title("LangChain Ollama Conversational Agent")
 if st.button("🛑 Reset Conversation"):
     st.session_state.chat_history = []
     st.session_state.last_steps = []
-    st.experimental_rerun()
+    st.rerun()
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -15,22 +17,25 @@ if "chat_history" not in st.session_state:
 user_input = st.chat_input("Say something...")
 
 if user_input:
-    # Save user message
     st.session_state.chat_history.append({"type": "human", "content": user_input})
 
-    # Run agent with message
+    formatted_history = [
+        HumanMessage(content=msg["content"]) if msg["type"] == "human" else AIMessage(content=msg["content"])
+        for msg in st.session_state.chat_history[:-1]  # exclude the current user_input, already appended
+    ]
+
     response = agent.invoke(
-        {"input": user_input},
+        {
+            "input": user_input,
+            "chat_history": formatted_history
+        },
         config={"configurable": {"session_id": "default"}}
     )
 
     final_answer = response.get("output", "")
     steps = response.get("intermediate_steps", [])
 
-    # Save AI message
     st.session_state.chat_history.append({"type": "ai", "content": final_answer})
-
-    # Store trace in session for sidebar display (optional: keep full trace history)
     st.session_state.last_steps = steps
 
 # Display full chat

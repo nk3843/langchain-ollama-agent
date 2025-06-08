@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: langchain-ollama-agent
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run streamlit_app.py
+    plan: free
+  
