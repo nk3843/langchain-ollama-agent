@@ -43,8 +43,8 @@ And see the agent's full reasoning trace in the sidebar.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/interactive-agent.git
-   cd interactive-agent
+   git clone https://github.com/yourusername/langchain-ollama-agent.git
+   cd langchain-ollama-agent
    ```
 
 2. Create and activate a virtual environment:
@@ -58,10 +58,16 @@ And see the agent's full reasoning trace in the sidebar.
    pip install -r requirements.txt
    ```
 
-4. Install the package in development mode:
-   ```bash
-   pip install -e .
-   ```
+## 📚 Dependencies
+
+Key dependencies and their versions:
+- langchain==0.3.25
+- langchain_community==0.3.24
+- langchain_core==0.3.64
+- langchain_ollama==0.3.3
+- Requests==2.32.3
+- streamlit
+- ollama
 
 ## 🚀 Usage
 
@@ -78,18 +84,19 @@ And see the agent's full reasoning trace in the sidebar.
 
 ### Project Structure
 ```
-interactive_agent/
+langchain-ollama-agent/
 ├── app/
 │   ├── core/
-│   │   ├── logger.py
-│   │   ├── prompt.py
-│   │   └── session.py
 │   ├── tools/
-│   │   └── search.py
+│   ├── __init__.py
 │   ├── agent.py
-│   └── config.py
+│   ├── config.py
+│   └── session_manager.py
+├── __init__.py
 ├── streamlit_app.py
 ├── requirements.txt
+├── render.yaml
+├── .gitignore
 └── README.md
 ```
 
@@ -99,13 +106,15 @@ interactive_agent/
 2. Register it in `app/agent.py`
 3. Update the system prompt in `app/core/prompt.py`
 
-### Environment Variables
+The agent is pre-configured using a Python class in app/config.py. No .env file is needed.
+# app/config.py
 
-Create a `.env` file:
-```env
-OLLAMA_HOST=http://localhost:11434
-OLLAMA_MODEL=mistral
-```
+class AgentConfig:
+    model_name = "mistral"
+    temperature = 0.1
+    max_iterations = 5
+    host = "http://localhost:11434"
+    timeout = 60
 
 ## 🤝 Contributing
 
@@ -114,10 +123,6 @@ OLLAMA_MODEL=mistral
 3. Commit your changes
 4. Push to the branch
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
